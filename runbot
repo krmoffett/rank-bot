@@ -9,6 +9,7 @@ from payout import *
 client = discord.Client()
 
 now = datetime.datetime.now()
+#global currentDay
 currentDay = now.day
 #currentDay = 26
 #payList = []
@@ -45,6 +46,8 @@ async def on_message(message):
             reorderUsers(p)
         with open('data.pkl', 'wb') as output:
             pickle.dump(payList, output, pickle.HIGHEST_PROTOCOL)
+        global currentDay
+        currentDay = now.day
 
     usrIn = message.content.split()
     if message.content.startswith('!test'):
