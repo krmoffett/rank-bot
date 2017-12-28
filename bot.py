@@ -3,21 +3,30 @@ import discord
 import asyncio
 import datetime
 import json
+import pickle
 from payout import * 
 
 client = discord.Client()
 
 now = datetime.datetime.now()
 currentDay = now.day
-currentDay = 26
-payList = []
+#currentDay = 26
+#payList = []
 
-output_json = json.load(open("dat.json"))
-print (output_json)
+#output_json = json.load(open("dat.json"))
+#print (output_json)
 #myPayout = Payout("1:00")
 #myPayout.users = ["Tommy Bombadil", "Chewbacca", "Oromis"]
 #payList.append(myPayout)
+#
+#with open("payouts.pkl", 'wb') as output:
+#    pickle.dump(myPayout, output, pickle.HIGHEST_PROTOCOL)
+#
+#del myPayout
 
+with open('data.pkl', 'rb') as input:
+    payList = pickle.load(input)
+#payList.append(pay1)
 #with open("dat.json", 'w') as f:
 #    json.dump(myPayout.__dict__, f)
 
@@ -34,6 +43,9 @@ async def on_message(message):
     if now.day != currentDay:
         for p in payList:
             reorderUsers(p)
+        with open('data.pkl', 'wb') as output:
+            pickle.dump(payList, output, pickle.HIGHEST_PROTOCOL)
+
     usrIn = message.content.split()
     if message.content.startswith('!test'):
         counter = 0
