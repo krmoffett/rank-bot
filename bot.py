@@ -4,32 +4,18 @@ import asyncio
 import datetime
 import json
 import pickle
+import sys
 from payout import * 
 
 client = discord.Client()
 
 now = datetime.datetime.now()
-#global currentDay
 currentDay = now.day
 #currentDay = 26
-#payList = []
 
-#output_json = json.load(open("dat.json"))
-#print (output_json)
-#myPayout = Payout("1:00")
-#myPayout.users = ["Tommy Bombadil", "Chewbacca", "Oromis"]
-#payList.append(myPayout)
-#
-#with open("payouts.pkl", 'wb') as output:
-#    pickle.dump(myPayout, output, pickle.HIGHEST_PROTOCOL)
-#
-#del myPayout
-
+# Read data file
 with open('data.pkl', 'rb') as input:
     payList = pickle.load(input)
-#payList.append(pay1)
-#with open("dat.json", 'w') as f:
-#    json.dump(myPayout.__dict__, f)
 
 @client.event
 async def on_ready():
@@ -39,26 +25,20 @@ async def on_ready():
     print('------')
 
 @client.event
+# Receive message
 async def on_message(message):
-    now = datetime.datetime.now()
+    now = datetime.datetime.now()   # Update day and reorder payout time if new day
     if now.day != currentDay:
         for p in payList:
             reorderUsers(p)
-        with open('data.pkl', 'wb') as output:
+        with open('test.pkl', 'wb') as output:
             pickle.dump(payList, output, pickle.HIGHEST_PROTOCOL)
         global currentDay
         currentDay = now.day
 
     usrIn = message.content.split()
-    if message.content.startswith('!test'):
-        counter = 0
-        tmp = await client.send_message(message.channel, 'Calculating messages...')
-        async for log in client.logs_from(message.channel, limit=100):
-            if log.author == message.author:
-                counter += 1
 
-        await client.edit_message(tmp, 'You have {} messages.'.format(counter))
-    elif message.content.startswith('!sleep'):
+    if message.content.startswith('!sleep'):
         await asyncio.sleep(5)
         await client.send_message(message.channel, 'Done sleeping')
 	
@@ -66,11 +46,11 @@ async def on_message(message):
         text = []
         time = ""
         usrFound = 0
-        if len(usrIn) == 1:
-            text = printPayout(myPayout)
-            time = myPayout.time
-            usrFound = 1
-        elif len(usrIn) >= 2:
+#        if len(usrIn) == 1:
+#            text = printPayout(myPayout)
+#            time = myPayout.time
+#            usrFound = 1
+        if len(usrIn) >= 2:
             user = ""
             for idx,val in enumerate(usrIn[1:]):
                 if idx == 0:
@@ -87,14 +67,41 @@ async def on_message(message):
         if usrFound == 1:
             output = "The schedule for todays payout at " + str(time) + " UTC is:"
             await client.send_message(message.channel, output)
-            for t in text:
-                await client.send_message(message.channel, t)
-
+#            for t in text:
+#                await client.send_message(message.channel, t)
+            sendtxt = ""
+            for idx, t in enumerate(text):
+                if idx == 0:
+                    sendtxt = text[idx]
+                else:
+                    sendtxt = sendtxt + "\n" + text[idx]
+            await client.send_message(message.channel, sendtxt)
+            
         else:
             await client.send_message(message.channel, "Username not found")
 
     elif usrIn[0] == '!hello':
         print ("Hello there")
 
-client.run('Mzk1NDI4NzEwNzQxNzA0NzA0.DSVqng.BmVzSR_jgqplCsn4sxvZuBGQq5g')
+    elif usrIn[0] == '$shutdown':
+        with open('test.pkl', 'wb') as output:
+            pickle.dump(payList, output, pickle.HIGHEST_PROTOCOL)
+        sys.exit()
+
+    elif usrIn[0] == '$reorder':
+        for p in payList:
+            reorderUsers(p)
+        with open('test.pkl', 'wb') as output:
+            pickle.dump(payList, output, pickle.HIGHEST_PROTOCOL)
+
+    elif usrIn[0] == '!help':
+        output = "Use !payout <username> to see the rank and time for specified user"
+        await client.send_message(message.channel, output)
+
+#    else:
+#        output = "Command \"" + message.content + "\" not valid." 
+#        await client.send_message(message.channel, output)
+        
+
+client.run('Mzk1NDI4NzEwNzQxNzA0NzA0.DSgULw.zcFH-j8TVQk5rnCY-ALlFHkHDy0')
 
