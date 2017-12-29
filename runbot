@@ -14,7 +14,7 @@ currentDay = now.day
 #currentDay = 26
 
 # Read data file
-with open('test.pkl', 'rb') as input:
+with open('data.pkl', 'rb') as input:
     payList = pickle.load(input)
 
 @client.event
@@ -38,7 +38,7 @@ async def on_message(message):
 
     usrIn = message.content.split()
 
-    elif message.content.startswith('!sleep'):
+    if message.content.startswith('!sleep'):
         await asyncio.sleep(5)
         await client.send_message(message.channel, 'Done sleeping')
 	
@@ -50,7 +50,7 @@ async def on_message(message):
 #            text = printPayout(myPayout)
 #            time = myPayout.time
 #            usrFound = 1
-        elif len(usrIn) >= 2:
+        if len(usrIn) >= 2:
             user = ""
             for idx,val in enumerate(usrIn[1:]):
                 if idx == 0:
@@ -69,24 +69,26 @@ async def on_message(message):
             await client.send_message(message.channel, output)
 #            for t in text:
 #                await client.send_message(message.channel, t)
+            sendtxt = ""
             for idx, t in enumerate(text):
                 if idx == 0:
                     sendtxt = text[idx]
                 else:
                     sendtxt = sendtxt + "\n" + text[idx]
-
+            await client.send_message(message.channel, sendtxt)
+            
         else:
             await client.send_message(message.channel, "Username not found")
 
     elif usrIn[0] == '!hello':
         print ("Hello there")
 
-    elif usrIn[0] == '!shutdown':
+    elif usrIn[0] == '$shutdown':
         with open('test.pkl', 'wb') as output:
             pickle.dump(payList, output, pickle.HIGHEST_PROTOCOL)
         sys.exit()
 
-    elif usrIn[0] == '!reorder':
+    elif usrIn[0] == '$reorder':
         for p in payList:
             reorderUsers(p)
         with open('test.pkl', 'wb') as output:
@@ -96,10 +98,10 @@ async def on_message(message):
         output = "Use !payout <username> to see the rank and time for specified user"
         await client.send_message(message.channel, output)
 
-    else:
-        output = "Command \"" + message.content + "\" not valid." 
-        await client.send_message(message.channel, output)
+#    else:
+#        output = "Command \"" + message.content + "\" not valid." 
+#        await client.send_message(message.channel, output)
         
 
-client.run('Mzk2MzU0NTgxMDYxMTczMjYx.DSgOWg.sMhUG1SUoHKM2TYCWR3sCwc0qAU')
+client.run('Mzk1NDI4NzEwNzQxNzA0NzA0.DSgULw.zcFH-j8TVQk5rnCY-ALlFHkHDy0')
 

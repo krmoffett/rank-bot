@@ -42,7 +42,7 @@ pay21.users = ["jediloco"]
 payList.append(pay21)
 
 pay23 = Payout("23:00")
-pay23.users = ["Shrike", "Darthpool", "Shuglim", "Howler24"]
+pay23.users = ["Shrike", "Darthpool", "Howler24", "Shuglin"]
 payList.append(pay23)
 
 # Write to file
