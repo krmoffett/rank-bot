@@ -6,7 +6,7 @@ class Payout(object):
 def printPayout(myPay):
     returnText = []
     for i,u in enumerate(myPay.users):
-        returnText.append(str(i + 1) + ". " + u)
+        returnText.append("\t" + str(i + 1) + ". " + u)
     return returnText
 
 def reorderUsers(myPay):

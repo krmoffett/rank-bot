@@ -1,20 +1,36 @@
 #!/usr/bin/env python3
 import discord
 import asyncio
-import datetime
+from datetime import datetime
 import json
 import pickle
 import sys
+from threading import Timer
 from payout import * 
 
 client = discord.Client()
 
-now = datetime.datetime.now()
-currentDay = now.day
+#now = datetime.datetime.now()
+#currentDay = now.day
 #currentDay = 26
 
+# Set up timer for daily refresh
+x = datetime.today()
+y = x.replace(day=x.day+1, hour = 2, minute=0, second=0, microsecond=0)
+delta_t = y - x
+secs = delta_t.seconds + 1
+
+def refresh():
+    for p in payList:
+        reorderUsers(p)
+    with open('test.pkl', 'wb') as output:
+            pickle.dump(payList, output)
+
+t = Timer(secs, refresh)
+t.start()
+
 # Read data file
-with open('data.pkl', 'rb') as input:
+with open('test.pkl', 'rb') as input:
     payList = pickle.load(input)
 
 @client.event
@@ -27,14 +43,14 @@ async def on_ready():
 @client.event
 # Receive message
 async def on_message(message):
-    now = datetime.datetime.now()   # Update day and reorder payout time if new day
-    if now.day != currentDay:
-        for p in payList:
-            reorderUsers(p)
-        with open('test.pkl', 'wb') as output:
-            pickle.dump(payList, output, pickle.HIGHEST_PROTOCOL)
-        global currentDay
-        currentDay = now.day
+#    now = datetime.datetime.now()   # Update day and reorder payout time if new day
+#    if now.day != currentDay:
+#        for p in payList:
+#            reorderUsers(p)
+#        with open('test.pkl', 'wb') as output:
+#            pickle.dump(payList, output, pickle.HIGHEST_PROTOCOL)
+#        global currentDay
+#        currentDay = now.day
 
     usrIn = message.content.split()
 
@@ -42,7 +58,7 @@ async def on_message(message):
         await asyncio.sleep(5)
         await client.send_message(message.channel, 'Done sleeping')
 	
-    elif usrIn[0] == '$payout':
+    elif usrIn[0] == '!payout':
         text = []
         time = ""
         usrFound = 0
@@ -65,8 +81,8 @@ async def on_message(message):
                         usrFound = 1
                         break
         if usrFound == 1:
-            output = "The schedule for todays payout at " + str(time) + " UTC is:"
-            await client.send_message(message.channel, output)
+            output = "The schedule for today's payout at " + str(time) + " UTC is:"
+#            await client.send_message(message.channel, output)
 #            for t in text:
 #                await client.send_message(message.channel, t)
             sendtxt = ""
@@ -75,26 +91,31 @@ async def on_message(message):
                     sendtxt = text[idx]
                 else:
                     sendtxt = sendtxt + "\n" + text[idx]
-            await client.send_message(message.channel, sendtxt)
+            output = output + "\n\n" + sendtxt
+            await client.send_message(message.channel, output)
             
         else:
             await client.send_message(message.channel, "Username not found")
 
-    elif usrIn[0] == '$hello':
+    elif usrIn[0] == '!hello':
         print ("Hello there")
 
     elif usrIn[0] == '$shutdown':
         with open('test.pkl', 'wb') as output:
-            pickle.dump(payList, output, pickle.HIGHEST_PROTOCOL)
+            pickle.dump(payList, output)
         sys.exit()
+    
+    elif usrIn[0] == '$write':
+        with open('test.pkl', 'wb') as output:
+            pickle.dump(payList, output)
 
     elif usrIn[0] == '$reorder':
         for p in payList:
             reorderUsers(p)
         with open('test.pkl', 'wb') as output:
-            pickle.dump(payList, output, pickle.HIGHEST_PROTOCOL)
+            pickle.dump(payList, output)
 
-    elif usrIn[0] == '$help':
+    elif usrIn[0] == '!help':
         output = "Use !payout <username> to see the rank and time for specified user"
         await client.send_message(message.channel, output)
 
@@ -103,5 +124,5 @@ async def on_message(message):
 #        await client.send_message(message.channel, output)
         
 
-client.run('Mzk2MzU0NTgxMDYxMTczMjYx.DSgOWg.sMhUG1SUoHKM2TYCWR3sCwc0qAU')
+client.run('Mzk2MzU0NTgxMDYxMTczMjYx.DS1qwg.tGJxKgGP5wR_PKfa7u6v-j0OqO4')
 
