@@ -115,6 +115,34 @@ async def on_message(message):
         with open('test.pkl', 'wb') as output:
             pickle.dump(payList, output)
 
+    elif usrIn[0] == '$setFirst':   #$setFirst <username>
+        if len(usrIn) < 2:
+            output = "Please give name of user to set as 1."
+            await client.send_message(message.channel, output)
+        elif len(usrIn) >= 2:
+            user = ""
+            time = ""
+            output = ""
+            index = 0;
+            for idx,val in enumerate(usrIn[1:]):
+                if idx == 0:
+                    user = val
+                else:
+                    user = user + " "  + val
+            print ("Setting first: " + user)
+            for idx,p in enumerate(payList):
+                for u in p.users:
+                    if user.lower() in u.lower():
+                        index = idx 
+                        break
+            print ("reordering" + payList[index].users[0])
+            while (payList[index].users[0] != user):
+                reorderUsers(payList[index])
+            print ("Done")
+            output = "Ranks for payout " + time + " reodered for rank 1:" + user
+            await client.send_message(message.channel, output)
+
+
     elif usrIn[0] == '!help':
         output = "Use !payout <username> to see the rank and time for specified user"
         await client.send_message(message.channel, output)
