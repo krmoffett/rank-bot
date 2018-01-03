@@ -54,11 +54,7 @@ async def on_message(message):
 
     usrIn = message.content.split()
 
-    if message.content.startswith('!sleep'):
-        await asyncio.sleep(5)
-        await client.send_message(message.channel, 'Done sleeping')
-	
-    elif usrIn[0] == '!payout':
+    if usrIn[0] == '!payout':
         text = []
         time = ""
         usrFound = 0
@@ -100,16 +96,16 @@ async def on_message(message):
     elif usrIn[0] == '!hello':
         print ("Hello there")
 
-    elif usrIn[0] == '$shutdown':
+    elif usrIn[0] == '$shutdown':   #exit bot while saving data
         with open('data.pkl', 'wb') as output:
             pickle.dump(payList, output)
         sys.exit()
     
-    elif usrIn[0] == '$write':
+    elif usrIn[0] == '$write':  #save payouts to file
         with open('data.pkl', 'wb') as output:
             pickle.dump(payList, output)
 
-    elif usrIn[0] == '$reorder':
+    elif usrIn[0] == '$reorder':    #reorder avery payout by one
         for p in payList:
             reorderUsers(p)
         with open('data.pkl', 'wb') as output:
@@ -154,6 +150,8 @@ async def on_message(message):
 #        output = "Command \"" + message.content + "\" not valid." 
 #        await client.send_message(message.channel, output)
         
+# Live bot token
+#client.run('Mzk1NDI4NzEwNzQxNzA0NzA0.DS2bqw.wIQdvEoYSi-SCGVIIUOSZ6zSb48')
 
-client.run('Mzk1NDI4NzEwNzQxNzA0NzA0.DS2bqw.wIQdvEoYSi-SCGVIIUOSZ6zSb48')
-
+# Test bot token
+client.run('Mzk2MzU0NTgxMDYxMTczMjYx.DS6MhA.hsCDim-0RHcfFpb-O4fmNFfC8EE')
