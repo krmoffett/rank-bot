@@ -127,7 +127,7 @@ async def on_message(message):
         await client.send_message(message.channel, output)
 
 # Live bot token
-#client.run('Mzk1NDI4NzEwNzQxNzA0NzA0.DS2bqw.wIQdvEoYSi-SCGVIIUOSZ6zSb48')
+client.run('Mzk1NDI4NzEwNzQxNzA0NzA0.DS2bqw.wIQdvEoYSi-SCGVIIUOSZ6zSb48')
 
 # Test bot token
-client.run('Mzk2MzU0NTgxMDYxMTczMjYx.DS6MhA.hsCDim-0RHcfFpb-O4fmNFfC8EE')
+#client.run('Mzk2MzU0NTgxMDYxMTczMjYx.DS6MhA.hsCDim-0RHcfFpb-O4fmNFfC8EE')
