@@ -10,10 +10,6 @@ from payout import *
 
 client = discord.Client()
 
-#now = datetime.datetime.now()
-#currentDay = now.day
-#currentDay = 26
-
 # Set up timer for daily refresh
 x = datetime.today()
 y = x.replace(day=x.day+1, hour = 2, minute=0, second=0, microsecond=0)
@@ -43,14 +39,6 @@ async def on_ready():
 @client.event
 # Receive message
 async def on_message(message):
-#    now = datetime.datetime.now()   # Update day and reorder payout time if new day
-#    if now.day != currentDay:
-#        for p in payList:
-#            reorderUsers(p)
-#        with open('data.pkl', 'wb') as output:
-#            pickle.dump(payList, output, pickle.HIGHEST_PROTOCOL)
-#        global currentDay
-#        currentDay = now.day
 
     usrIn = message.content.split()
 
@@ -58,10 +46,6 @@ async def on_message(message):
         text = []
         time = ""
         usrFound = 0
-#        if len(usrIn) == 1:
-#            text = printPayout(myPayout)
-#            time = myPayout.time
-#            usrFound = 1
         if len(usrIn) >= 2:
             user = ""
             for idx,val in enumerate(usrIn[1:]):
@@ -77,10 +61,7 @@ async def on_message(message):
                         usrFound = 1
                         break
         if usrFound == 1:
-            output = "The schedule for today's payout at " + str(time) + " UTC is:"
-#            await client.send_message(message.channel, output)
-#            for t in text:
-#                await client.send_message(message.channel, t)
+            output = "The order for today's payout at " + str(time) + " UTC is:"
             sendtxt = ""
             for idx, t in enumerate(text):
                 if idx == 0:
@@ -141,15 +122,10 @@ async def on_message(message):
             output = "Ranks for payout " + time + " reodered for rank 1:" + user
             await client.send_message(message.channel, output)
 
-
     elif usrIn[0] == '!help':
         output = "Use !payout <username> to see the rank and time for specified user"
         await client.send_message(message.channel, output)
 
-#    else:
-#        output = "Command \"" + message.content + "\" not valid." 
-#        await client.send_message(message.channel, output)
-        
 # Live bot token
 #client.run('Mzk1NDI4NzEwNzQxNzA0NzA0.DS2bqw.wIQdvEoYSi-SCGVIIUOSZ6zSb48')
 
