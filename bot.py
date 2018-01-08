@@ -126,8 +126,58 @@ async def on_message(message):
         output = "Use !payout <username> to see the rank and time for specified user"
         await client.send_message(message.channel, output)
 
+    elif usrIn[0] == '$addUser':
+        newTime = usrIn[1]
+        user = ""
+        sendtxt = ""
+        for idx,val in enumerate(usrIn[2:]):
+            if idx == 0:
+                user = val
+            else:
+                user = user + " "  + val
+        print ("Adding " + user)
+        timeFound = 0
+        index = 0
+        for idx,p in enumerate(payList):
+            if p.time == newTime:
+                timeFound = 1
+                index = idx
+                break
+        if timeFound == 1:
+            payList[index].users.append(user)
+        else:
+            newPayout = Payout(newTime)
+            newPayout.users = [user]
+            payList.append(newPayout)
+
+        with open('data.pkl', 'wb') as output:
+            pickle.dump(payList, output)
+
+        sendtxt = "Added " + user + " to payout at " + newTime
+        await client.send_message(message.channel, sendtxt)
+
+    elif usrIn[0] == '$delUser':
+        user = ""
+        sendtxt = ""
+        for idx,val in enumerate(usrIn[1:]):
+            if idx == 0:
+                user = val
+            else:
+                user = user + " "  + val
+
+        for p in payList:
+            for u in p.users:
+                if user.lower() in u.lower():
+                    p.users.remove(u)
+                    sendtxt = "Removed " + u
+                    await client.send_message(message.channel, sendtxt)
+                    break
+    
+        with open('data.pkl', 'wb') as output:
+            pickle.dump(payList, output)
+
 # Live bot token
-client.run('Mzk1NDI4NzEwNzQxNzA0NzA0.DS2bqw.wIQdvEoYSi-SCGVIIUOSZ6zSb48')
+#client.run('Mzk1NDI4NzEwNzQxNzA0NzA0.DS2bqw.wIQdvEoYSi-SCGVIIUOSZ6zSb48')
 
 # Test bot token
-#client.run('Mzk2MzU0NTgxMDYxMTczMjYx.DS6MhA.hsCDim-0RHcfFpb-O4fmNFfC8EE')
+client.run('Mzk2MzU0NTgxMDYxMTczMjYx.DS6MhA.hsCDim-0RHcfFpb-O4fmNFfC8EE')
