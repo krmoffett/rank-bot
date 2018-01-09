@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import discord
 import asyncio
-from datetime import datetime
+from datetime import * 
 import json
 import pickle
 import sys
@@ -57,11 +57,11 @@ async def on_message(message):
                 for u in p.users:
                     if user.lower() in u.lower():
                         text = printPayout(p)
-                        time = p.time
+                        time = p.payTime
                         usrFound = 1
                         break
         if usrFound == 1:
-            output = "The order for today's payout at " + str(time) + " UTC is:"
+            output = "The order for today's payout at " + str(time.hour) + ":" + "{0:0=2d}".format(time.minute) + " UTC is:"
             sendtxt = ""
             for idx, t in enumerate(text):
                 if idx == 0:
@@ -128,6 +128,8 @@ async def on_message(message):
 
     elif usrIn[0] == '$addUser':
         newTime = usrIn[1]
+        newHour = newTime.split(':')[0]
+        newMinute = newTime.split(':')[1]
         user = ""
         sendtxt = ""
         for idx,val in enumerate(usrIn[2:]):
@@ -139,14 +141,14 @@ async def on_message(message):
         timeFound = 0
         index = 0
         for idx,p in enumerate(payList):
-            if p.time == newTime:
+            if p.payTime.hour == int(newHour) and p.payTime.minute == int(newMinute):
                 timeFound = 1
                 index = idx
                 break
         if timeFound == 1:
             payList[index].users.append(user)
         else:
-            newPayout = Payout(newTime)
+            newPayout = Payout(newHour, newMinute)
             newPayout.users = [user]
             payList.append(newPayout)
 

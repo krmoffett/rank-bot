@@ -1,6 +1,8 @@
+from datetime import *
+
 class Payout(object):
-	def __init__(self, time):
-		self.time = time
+	def __init__(self, hour, minute):
+		self.payTime = time(hour, minute)
 	users = []
 
 def printPayout(myPay):
