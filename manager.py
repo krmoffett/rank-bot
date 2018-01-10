@@ -46,5 +46,5 @@ pay23.users = ["Shrike", "Darthpool", "Howler24", "Shuglin"]
 payList.append(pay23)
 
 # Write to file
-with open('data.pkl', 'wb') as output:
-    pickle.dump(payList, output, pickle.HIGHEST_PROTOCOL)
+with open('data.pkl', 'wb+') as output:
+    pickle.dump(payList, output)
