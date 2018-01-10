@@ -2,7 +2,6 @@
 import discord
 import asyncio
 from datetime import * 
-import json
 import pickle
 import sys
 from threading import Timer
@@ -12,7 +11,7 @@ client = discord.Client()
 
 # Set up timer for daily refresh
 x = datetime.today()
-y = x.replace(day=x.day+1, hour = 2, minute=0, second=0, microsecond=0)
+y = x.replace(day=x.day+1, hour=2, minute=0, second=0, microsecond=0)
 delta_t = y - x
 secs = delta_t.seconds + 1
 
@@ -45,6 +44,7 @@ async def on_message(message):
     if usrIn[0] == '!payout':
         text = []
         time = ""
+        timeUntil = ""
         usrFound = 0
         if len(usrIn) >= 2:
             user = ""
@@ -58,6 +58,7 @@ async def on_message(message):
                     if user.lower() in u.lower():
                         text = printPayout(p)
                         time = p.payTime
+                        timeUntil = p.printTimeUntil()
                         usrFound = 1
                         break
         if usrFound == 1:
@@ -68,7 +69,7 @@ async def on_message(message):
                     sendtxt = text[idx]
                 else:
                     sendtxt = sendtxt + "\n" + text[idx]
-            output = output + "\n\n" + sendtxt
+            output = output + "\n\n" + sendtxt + "\n\nTime until payout: " + timeUntil
             await client.send_message(message.channel, output)
             
         else:
