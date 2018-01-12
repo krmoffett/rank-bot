@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 import discord
 import asyncio
-from datetime import datetime
-import json
+from datetime import * 
 import pickle
 import sys
 from threading import Timer
@@ -12,7 +11,7 @@ client = discord.Client()
 
 # Set up timer for daily refresh
 x = datetime.today()
-y = x.replace(day=x.day+1, hour = 2, minute=0, second=0, microsecond=0)
+y = x.replace(day=x.day+1, hour=2, minute=0, second=0, microsecond=0)
 delta_t = y - x
 secs = delta_t.seconds + 1
 
@@ -45,6 +44,7 @@ async def on_message(message):
     if usrIn[0] == '!payout':
         text = []
         time = ""
+        timeUntil = ""
         usrFound = 0
         if len(usrIn) >= 2:
             user = ""
@@ -57,18 +57,19 @@ async def on_message(message):
                 for u in p.users:
                     if user.lower() in u.lower():
                         text = printPayout(p)
-                        time = p.time
+                        time = p.payTime
+                        timeUntil = p.printTimeUntil()
                         usrFound = 1
                         break
         if usrFound == 1:
-            output = "The order for today's payout at " + str(time) + " UTC is:"
+            output = "The order for today's payout at " + str(time.hour) + ":" + "{0:0=2d}".format(time.minute) + " UTC is:"
             sendtxt = ""
             for idx, t in enumerate(text):
                 if idx == 0:
                     sendtxt = text[idx]
                 else:
                     sendtxt = sendtxt + "\n" + text[idx]
-            output = output + "\n\n" + sendtxt
+            output = output + "\n\n" + sendtxt + "\n\nTime until payout: " + timeUntil
             await client.send_message(message.channel, output)
             
         else:
@@ -128,6 +129,8 @@ async def on_message(message):
 
     elif usrIn[0] == '$addUser':
         newTime = usrIn[1]
+        newHour = newTime.split(':')[0]
+        newMinute = newTime.split(':')[1]
         user = ""
         sendtxt = ""
         for idx,val in enumerate(usrIn[2:]):
@@ -139,14 +142,14 @@ async def on_message(message):
         timeFound = 0
         index = 0
         for idx,p in enumerate(payList):
-            if p.time == newTime:
+            if p.payTime.hour == int(newHour) and p.payTime.minute == int(newMinute):
                 timeFound = 1
                 index = idx
                 break
         if timeFound == 1:
             payList[index].users.append(user)
         else:
-            newPayout = Payout(newTime)
+            newPayout = Payout(newHour, newMinute)
             newPayout.users = [user]
             payList.append(newPayout)
 

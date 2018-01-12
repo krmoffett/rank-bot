@@ -1,7 +1,18 @@
-class Payout(object):
-	def __init__(self, time):
-		self.time = time
-	users = []
+from datetime import *
+
+class Payout():
+    def __init__(self, hour, minute):
+        self.payTime = datetime(MINYEAR, 1, 1, hour, minute, 0, 0)
+        
+    def printTimeUntil(self):
+        currentDay = datetime.now()
+        diff = self.payTime - currentDay
+        hours = divmod(diff.seconds, 3600)
+        minutes = divmod(hours[1], 60)
+        
+        return (str(hours[0]) + ":" + "{0:0=2d}".format(minutes[0]))
+
+    users = []
 
 def printPayout(myPay):
     returnText = []
