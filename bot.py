@@ -73,7 +73,11 @@ async def on_message(message):
             await client.send_message(message.channel, output)
             
         else:
-            await client.send_message(message.channel, "Username not found")
+            if (usrIn[1].lower() == 'bware' or usrIn[1].lower() == 'beware'):
+                await client.send_message(message.channel, "butt cheeks")
+            else:
+                await client.send_message(message.channel, "Username not found")
+
 
     elif usrIn[0] == '!avoid':
         sendtxt = "The following have upcoming payouts. Please avoid attacking them:\n\t"
