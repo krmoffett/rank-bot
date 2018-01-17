@@ -73,7 +73,25 @@ async def on_message(message):
             await client.send_message(message.channel, output)
             
         else:
-            await client.send_message(message.channel, "Username not found")
+            if (usrIn[1].lower() == 'bware' or usrIn[1].lower() == 'beware'):
+                await client.send_message(message.channel, "butt cheeks")
+            else:
+                await client.send_message(message.channel, "Username not found")
+
+
+    elif usrIn[0] == '!avoid':
+        sendtxt = "The following have upcoming payouts. Please avoid attacking them:\n\t"
+        usersToAvoid = []
+        for p in payList:
+            if p.getHoursUntil() <= 4:
+                usersToAvoid += p.users
+        for i,u in enumerate(usersToAvoid):
+            if i == len(usersToAvoid) - 1:
+                sendtxt += u
+            else:
+                sendtxt += u + ', '
+
+        await client.send_message(message.channel, sendtxt)
 
     elif usrIn[0] == '!hello':
         print ("Hello there")

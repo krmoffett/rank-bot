@@ -12,6 +12,12 @@ class Payout():
         
         return (str(hours[0]) + ":" + "{0:0=2d}".format(minutes[0]))
 
+    def getHoursUntil(self):
+        currentDay = datetime.now()
+        diff = self.payTime - currentDay
+        hours = divmod(diff.seconds, 3600)
+        return hours[0]  
+
     users = []
 
 def printPayout(myPay):
