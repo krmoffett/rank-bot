@@ -11,21 +11,6 @@ from auth import *
 client = discord.Client()
 token = test_token
 
-## Set up timer for daily refresh
-#x = datetime.today()
-#y = x.replace(day=x.day+1, hour=15, minute=18, second=0, microsecond=0)
-#delta_t = y - x
-#secs = delta_t.seconds + 1
-#
-#def refresh():
-#    for p in payList:
-#        reorderUsers(p)
-#    with open('data.pkl', 'wb') as output:
-#            pickle.dump(payList, output)
-#
-#t = Timer(secs, refresh)
-#t.start()
-
 # Read data file
 with open('data.pkl', 'rb') as input:
     payList = pickle.load(input)
@@ -46,8 +31,7 @@ async def on_message(message):
     #    payList = pickle.load(input)
 
     usrIn = message.content.split()
-    if usrIn[0][0] == '!':
-        print("reading")
+    if usrIn[0][0] == '!' or usrIn[0][0] == '$':
         # Read data file
         with open('data.pkl', 'rb') as input:
             payList = pickle.load(input)
@@ -84,11 +68,7 @@ async def on_message(message):
             await client.send_message(message.channel, output)
             
         else:
-            if (usrIn[1].lower() == 'bware' or usrIn[1].lower() == 'beware'):
-                await client.send_message(message.channel, "butt cheeks")
-            else:
-                await client.send_message(message.channel, "Username not found")
-
+            await client.send_message(message.channel, "Username not found")
 
     elif usrIn[0] == '!avoid':
         sendtxt = "The following have upcoming payouts. Please avoid attacking them:\n\t"
@@ -208,5 +188,4 @@ async def on_message(message):
         with open('data.pkl', 'wb') as output:
             pickle.dump(payList, output)
 
-# Live bot token
 client.run(token)
