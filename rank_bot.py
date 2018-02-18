@@ -26,10 +26,6 @@ async def on_ready():
 # Receive message
 async def on_message(message):
 
-    # Read data file
-    #with open('data.pkl', 'rb') as input:
-    #    payList = pickle.load(input)
-
     usrIn = message.content.split()
     if usrIn[0][0] == '!' or usrIn[0][0] == '$':
         # Read data file
@@ -65,10 +61,11 @@ async def on_message(message):
                 else:
                     sendtxt = sendtxt + "\n" + text[idx]
             output = output + "\n\n" + sendtxt + "\n\nTime until payout: " + timeUntil
+            output = "```" + output + "```"
             await client.send_message(message.channel, output)
             
         else:
-            await client.send_message(message.channel, "Username not found")
+            await client.send_message(message.channel, "```Username not found```")
 
     elif usrIn[0] == '!avoid':
         sendtxt = "The following have upcoming payouts. Please avoid attacking them:\n\t"
@@ -82,6 +79,7 @@ async def on_message(message):
             else:
                 sendtxt += u + ', '
 
+        sendtxt = "```" + sendtxt + "```"
         await client.send_message(message.channel, sendtxt)
 
     elif usrIn[0] == '!hello':
@@ -134,6 +132,7 @@ async def on_message(message):
 
     elif usrIn[0] == '!help':
         output = "Use !payout <username> to see the rank and time for specified user"
+        output = "```" + output + "```"
         await client.send_message(message.channel, output)
 
     elif usrIn[0] == '$addUser':
