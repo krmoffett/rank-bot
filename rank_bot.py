@@ -28,6 +28,8 @@ async def on_message(message):
 
     usrIn = message.content.split()
     if usrIn[0][0] == '!' or usrIn[0][0] == '$':
+        print(message.author)
+        print(message.content)
         # Read data file
         with open('data.pkl', 'rb') as input:
             payList = pickle.load(input)
@@ -73,6 +75,7 @@ async def on_message(message):
         for p in payList:
             if p.getHoursUntil() <= 4:
                 usersToAvoid += p.users
+        userToAvoid = usersToAvoid.sort(key=str.lower)
         for i,u in enumerate(usersToAvoid):
             if i == len(usersToAvoid) - 1:
                 sendtxt += u
