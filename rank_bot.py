@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import discord
 import asyncio
+import collections
 from datetime import * 
 import pickle
 import sys
@@ -68,6 +69,25 @@ async def on_message(message):
             
         else:
             await client.send_message(message.channel, "```Username not found```")
+
+    elif usrIn[0] == '!payouts':
+        output = "Time left before next payout:\n\n"
+        payout_dict = {}
+        for p in payList:
+            key = p.getHoursUntil()
+            payout_dict[key] = p
+        od_payout_dict = collections.OrderedDict(sorted(payout_dict.items()))
+#        for key in od_payout_dict:
+#            print (key, od_payout_dict[key].users)
+        for key in od_payout_dict:
+            output += od_payout_dict[key].printTimeUntil() + " - "
+            for idx,u in enumerate(od_payout_dict[key].users):
+                output += u
+                if idx != len(od_payout_dict[key].users) - 1:
+                    output += " - "
+            output += "\n"
+        output = "```" + output + "```"
+        await client.send_message(message.channel, output)
 
     elif usrIn[0] == '!avoid':
         sendtxt = "The following have upcoming payouts. Please avoid attacking them:\n\t"

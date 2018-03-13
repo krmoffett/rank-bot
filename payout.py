@@ -12,6 +12,14 @@ class Payout():
         
         return (str(hours[0]) + ":" + "{0:0=2d}".format(minutes[0]))
 
+    def getTimeUntil(self):
+        currentDay = datetime.now()
+        diff = self.payTime - currentDay
+        hours = divmod(diff.seconds, 3600)
+        minutes = divmod(hours[1], 60)
+
+        return (hours, minutes)
+
     def getHoursUntil(self):
         currentDay = datetime.now()
         diff = self.payTime - currentDay
