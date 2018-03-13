@@ -27,7 +27,7 @@ async def on_ready():
 async def on_message(message):
 
     usrIn = message.content.split()
-    if usrIn[0][0] == '!' or usrIn[0][0] == '$':
+    if message.content[0] == '!' or message.content[0] == '$':
         print(message.author)
         print(message.content)
         # Read data file
