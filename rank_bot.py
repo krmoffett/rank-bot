@@ -26,20 +26,25 @@ async def on_ready():
 @client.event
 # Receive message
 async def on_message(message):
-
+    if len(message.content) > 0:
+        if message.content[0] == '!' or message.content[0] == '$':
+            print(message.author)
+            print(message.content)
+            # Read data file
+            with open('data.pkl', 'rb') as input:
+                payList = pickle.load(input)
+    usrIn = []
     usrIn = message.content.split()
-    if message.content[0] == '!' or message.content[0] == '$':
-        print(message.author)
-        print(message.content)
-        # Read data file
-        with open('data.pkl', 'rb') as input:
-            payList = pickle.load(input)
+    if len(usrIn) < 2:
+        usrIn.append('blank')
 
     if usrIn[0] == '!payout':
         text = []
         time = ""
+        em = discord.Embed(colour=0x55B5FF)
         timeUntil = ""
         usrFound = 0
+        output = ""
         if len(usrIn) >= 2:
             user = ""
             for idx,val in enumerate(usrIn[1:]):
@@ -56,22 +61,24 @@ async def on_message(message):
                         usrFound = 1
                         break
         if usrFound == 1:
-            output = "The order for today's payout at " + str(time.hour) + ":" + "{0:0=2d}".format(time.minute) + " UTC is:"
+            em.title = "The order for today's payout at " + str(time.hour) + ":" + "{0:0=2d}".format(time.minute) + " UTC is:"
             sendtxt = ""
             for idx, t in enumerate(text):
                 if idx == 0:
                     sendtxt = text[idx]
                 else:
                     sendtxt = sendtxt + "\n" + text[idx]
-            output = output + "\n\n" + sendtxt + "\n\nTime until payout: " + timeUntil
-            output = "```" + output + "```"
-            await client.send_message(message.channel, output)
+            output = output + "\n\n" + sendtxt + "\n\nTime until payout:` " + timeUntil + "`"
+#            output = "```" + output + "```"
+            em.description = output
+            await client.send_message(message.channel, embed=em)
             
         else:
             await client.send_message(message.channel, "```Username not found```")
 
     elif usrIn[0] == '!payouts':
-        output = "Time left before next payout:\n\n"
+        em = discord.Embed(title='Time left before next payout:', colour=0x55B5FF)
+        output = ""
         payout_dict = {}
         for p in payList:
             key = p.getHoursUntil()
@@ -80,17 +87,18 @@ async def on_message(message):
 #        for key in od_payout_dict:
 #            print (key, od_payout_dict[key].users)
         for key in od_payout_dict:
-            output += od_payout_dict[key].printTimeUntil() + " - "
+            output += "**" + od_payout_dict[key].printTimeUntil() + "** - "
             for idx,u in enumerate(od_payout_dict[key].users):
                 output += u
                 if idx != len(od_payout_dict[key].users) - 1:
                     output += " - "
             output += "\n"
-        output = "```" + output + "```"
-        await client.send_message(message.channel, output)
+        em.description = output
+        await client.send_message(message.channel, embed=em)
 
     elif usrIn[0] == '!avoid':
-        sendtxt = "The following have upcoming payouts. Please avoid attacking them:\n\t"
+        em = discord.Embed(title="The following have upcoming payouts. Please avoid attacking them:", colour=0x55B5FF)
+        sendtxt = ""
         usersToAvoid = []
         for p in payList:
             if p.getHoursUntil() <= 4:
@@ -102,8 +110,11 @@ async def on_message(message):
             else:
                 sendtxt += u + ', '
 
-        sendtxt = "```" + sendtxt + "```"
-        await client.send_message(message.channel, sendtxt)
+#        sendtxt = "```" + sendtxt + "```"
+        if len(usersToAvoid) == 0:
+            sendtxt = "No one has an upcoming payout"
+        em.description = sendtxt
+        await client.send_message(message.channel, embed=em)
 
     elif usrIn[0] == '!hello':
         print ("Hello there")
