@@ -1,8 +1,9 @@
-from datetime import *
+from datetime import datetime, MINYEAR 
 
 class Payout():
     def __init__(self, hour, minute):
         self.payTime = datetime(MINYEAR, 1, 1, hour, minute, 0, 0)
+        self.users = []
         
     def printTimeUntil(self):
         currentDay = datetime.now()
@@ -26,7 +27,15 @@ class Payout():
         hours = divmod(diff.seconds, 3600)
         return hours[0]  
 
-    users = []
+    def setAtIndex(self, player, index):
+        currentIndex = 0
+        for idx,u in enumerate(self.users):
+            if player.lower() in u.lower():
+                currentIndex = idx
+                break
+        self.users.pop(currentIndex)
+        self.users.insert(index - 1, player)
+                
 
 def printPayout(myPay):
     returnText = []

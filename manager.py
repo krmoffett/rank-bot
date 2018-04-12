@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
 import pickle
-from payout import *
+from payout import Payout 
 
 payList = []
 
 pay1 = Payout(1, 0)
-pay1.users = ["Tommy Bombadil", "Chowbacca", "Oromis"]
+pay1.users = ["TommyBombadil", "Chowbacca", "Oromis"]
 payList.append(pay1)
 
 pay2 = Payout(2, 0)
@@ -14,7 +14,7 @@ pay2.users = ["Darcdath", "hurricain", "Ftalten 66"]
 payList.append(pay2)
 
 pay9 = Payout(9, 0)
-pay9.users = ["C3P SHIRO"]
+pay9.users = ["C3PSHIRO"]
 payList.append(pay9)
 
 pay0 = Payout(0, 0)
