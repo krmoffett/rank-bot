@@ -35,8 +35,14 @@ class Payout():
                 break
         self.users.pop(currentIndex)
         self.users.insert(index - 1, player)
+    
+    def rename(self, current_name, new_name):
+        rank = self.users.index(current_name)
+#        self.users[rank] = new_name
+        self.users.pop(rank)
+        self.users.insert(rank, new_name)
+        print (self.users[rank])
                 
-
 def printPayout(myPay):
     returnText = []
     for i,u in enumerate(myPay.users):

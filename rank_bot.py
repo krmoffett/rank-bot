@@ -199,5 +199,29 @@ async def remove(player : str):
     with open('data.pkl', 'wb') as output:
         pickle.dump(payList, output)
 
+@bot.command()
+async def rename(current_name : str, new_name : str):
+    """Allows player to change the name on the bot
+
+    Parameters:
+    current_name -- current player name
+    new_name -- desired new name
+    """
+    await bot.say("Attempting to change name")
+    payList = readPayoutFile()
+    found = False
+
+    for p in payList:
+        for u in p.users:
+            if current_name.lower() in u.lower():
+                p.rename(current_name, new_name)
+                await bot.say("Username changed to " + new_name)
+                found = True
+                with open('data.pkl', 'wb') as output:
+                    pickle.dump(payList, output)
+                break
+    if not found:
+        await bot.say("Could not change name")
+
 if __name__ == "__main__":
     bot.run(token)
