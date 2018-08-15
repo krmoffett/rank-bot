@@ -168,7 +168,7 @@ async def add(time : str, player : str):
     if timeFound == 1:
         payList[index].users.append(player)
     else:
-        newPayout = Payout(newHour, newMinute)
+        newPayout = Payout(int(newHour), int(newMinute))
         newPayout.users = [player]
         payList.append(newPayout)
 
@@ -190,14 +190,18 @@ async def remove(player : str):
 
     for p in payList:
         for u in p.users:
-            if player.lower() in u.lower():
+            if player.lower() == u.lower():
                 p.users.remove(u)
                 sendtxt = "Removed " + u
+                if len(p.users) == 0:
+                    payList.remove(p)
+                with open('data.pkl', 'wb') as output:
+                    pickle.dump(payList, output)
                 await bot.say(sendtxt)
-                break
+                return
 
-    with open('data.pkl', 'wb') as output:
-        pickle.dump(payList, output)
+  #  with open('data.pkl', 'wb') as output:
+  #      pickle.dump(payList, output)
 
 @bot.command()
 async def rename(current_name : str, new_name : str):
