@@ -107,7 +107,7 @@ async def avoid(ctx):
         if p.getHoursUntil() <= 4:
             for u in p.users:
                 usersToAvoid.append(u)
-    userToAvoid = usersToAvoid.sort(key=str.lower)
+    usersToAvoid = usersToAvoid.sort(key=str.lower)
     for i,u in enumerate(usersToAvoid):
         if i == len(usersToAvoid) - 1:
             sendtxt += u
@@ -226,6 +226,26 @@ async def rename(current_name : str, new_name : str):
                 break
     if not found:
         await bot.say("Could not change name")
+
+@bot.command()
+async def rotate(time : str):
+    """Rotates the specified payout through one day
+
+    Parameters:
+    player_name -- the name of a player in the desired payout
+    time -- the payout time of the desired payout
+    """
+    payList = readPayoutFile()
+    hour = time.split(':')[0]
+    minute = time.split(':')[1]
+    for p in payList:
+        if p.payTime.hour == int(hour) and p.payTime.minute == int(minute):
+            reorderUsers(p)
+            with open('data.pkl', 'wb') as output:
+                pickle.dump(payList, output)
+            await bot.say("Rotated payout at {}:{}".format(hour, minute))
+            return
+    await bot.say("Could not rotate payout")
 
 if __name__ == "__main__":
     bot.run(token)
