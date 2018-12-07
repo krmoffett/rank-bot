@@ -179,7 +179,7 @@ async def add(time : str, player : str):
     await bot.say(sendtxt)
 
 @bot.command()
-async def remove(player : str):
+async def remove(*, player : str):
     """Removes the specified user from payouts
     
     Parameters:
